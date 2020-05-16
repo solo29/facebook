@@ -5,7 +5,6 @@
       <SideBar></SideBar>
       <div class="overflow-x-hidden w-2/3">
         <router-view></router-view>
-        <li v-for="i in 30" :key="i">qweqwe</li>
       </div>
     </div>
   </div>

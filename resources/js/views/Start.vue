@@ -1,6 +1,6 @@
 <template>
-    <div class=" p-3">
-        start comp
+    <div>
+        start comp tt
     </div>
 </template>
 

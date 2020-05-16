@@ -17,7 +17,7 @@ class RetrivePostsTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $user = $this->signIn();
-        $posts = factory(Post::class, 2)->create();
+        $posts = factory(Post::class, 2)->create(['user_id' => $user->id]);
 
         $response = $this->get('/api/posts')->assertStatus(200);
 
@@ -26,22 +26,41 @@ class RetrivePostsTest extends TestCase
                 [
                     'data' => [
                         'type' => 'posts',
-                        'post_id' => $posts->first()->id,
+                        'post_id' => $posts->last()->id,
                         'attributes' => [
-                            'body' => $posts->first()->body
+                            'body' => $posts->last()->body
                         ]
                     ]
                 ],
                 [
                     'data' => [
                         'type' => 'posts',
-                        'post_id' => $posts->last()->id,
+                        'post_id' => $posts->first()->id,
                         'attributes' => [
-                            'body' => $posts->last()->body
+                            'body' => $posts->first()->body
                         ]
                     ]
                 ]
             ],
+            'links' => [
+                'self' => url('/posts')
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function user_can_retrive_only_own_posts()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+        factory(Post::class)->create();
+
+
+
+        $response = $this->get('/api/posts')->assertStatus(200);
+
+        $response->assertExactJson([
+            'data' => [],
             'links' => [
                 'self' => url('/posts')
             ]

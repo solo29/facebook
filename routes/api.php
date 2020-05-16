@@ -20,4 +20,6 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::post('/posts', 'PostController@store');
+
+    Route::get('/posts', 'PostController@index');
 });

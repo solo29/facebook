@@ -1,9 +1,8 @@
 <template>
   <div class="flex flex-col items-center py-4">
     <NewPost></NewPost>
-    <template v-if="posts">
-      <Post v-for="post in posts.data" :key="post.data.post_id" :post="post"></Post>sdsds
-    </template>
+    <p v-if="loading">..loading</p>
+    <Post v-else v-for="post in posts.data" :key="post.data.post_id" :post="post"></Post>
   </div>
 </template>
 <script>
@@ -17,7 +16,8 @@ export default {
   },
   data() {
     return {
-      posts: null
+      posts: [],
+      loading: true
     };
   },
   mounted() {
@@ -28,7 +28,8 @@ export default {
       })
       .catch(e => {
         console.error("Unable to fetch posts");
-      });
+      })
+      .finally(() => (this.loading = false));
   }
 };
 </script>

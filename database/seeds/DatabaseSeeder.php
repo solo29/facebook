@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         //$this->call(PostSeeder::class);
 
-        factory(User::class)->create(['email' => 'solo@solo', 'name' => 'gio solo']);
-        factory(Post::class, 10)->create(['user_id' => 1]);
+        factory(User::class)->create(['email' => 'solo@solo', 'name' => 'gio solo', 'password' => bcrypt('solo')]);
+        factory(User::class)->create(['email' => 'test@test', 'name' => 'test solo', 'password' => bcrypt('test')]);
+        factory(Post::class, 5)->create(['user_id' => 1]);
+        factory(Post::class, 5)->create(['user_id' => 2]);
     }
 }

@@ -2141,7 +2141,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "Post"
+  name: "Post",
+  props: {
+    post: {
+      type: Object,
+      required: true
+    }
+  }
 });
 
 /***/ }),
@@ -2183,6 +2189,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2190,6 +2198,20 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     NewPost: _components_NewPost__WEBPACK_IMPORTED_MODULE_0__["default"],
     Post: _components_Post__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  data: function data() {
+    return {
+      posts: null
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    axios.get("api/posts").then(function (res) {
+      _this.posts = res.data;
+    })["catch"](function (e) {
+      console.error("Unable to fetch posts");
+    });
   }
 });
 
@@ -20162,9 +20184,36 @@ var render = function() {
     "div",
     { staticClass: "bg-white rounded shadow w-2/3 mt-6 overflow-hidden" },
     [
-      _vm._m(0),
+      _c("div", { staticClass: "flex flex-col p-4" }, [
+        _c("div", { staticClass: "flex items-center" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "ml-4" }, [
+            _c("div", { staticClass: "text-sm font-bold" }, [
+              _vm._v(
+                _vm._s(_vm.post.data.attributes.posted_by.data.attributes.name)
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "text-sm text-gray-500" }, [
+              _vm._v(_vm._s(_vm.post.data.attributes.posted_at))
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "mt-4" }, [
+          _c("p", [_vm._v(_vm._s(_vm.post.data.attributes.body))])
+        ])
+      ]),
       _vm._v(" "),
-      _vm._m(1),
+      _vm.post.data.attributes.image
+        ? _c("div", { staticClass: "w-full" }, [
+            _c("img", {
+              staticClass: "w-full h-64 object-cover object-center",
+              attrs: { src: _vm.post.data.attributes.image, alt: "post img" }
+            })
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c(
         "div",
@@ -20193,7 +20242,7 @@ var render = function() {
             _c("p", { staticClass: "ml-1" }, [_vm._v("Gio and 299 others")])
           ]),
           _vm._v(" "),
-          _vm._m(2)
+          _vm._m(1)
         ]
       ),
       _vm._v(" "),
@@ -20270,45 +20319,13 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "flex flex-col p-4" }, [
-      _c("div", { staticClass: "flex items-center" }, [
-        _c("div", { staticClass: "w-8" }, [
-          _c("img", {
-            staticClass:
-              "border border-blue-400 w-8 h-8 object-cover rounded-full",
-            attrs: {
-              src:
-                "https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.0-9/72350364_2874054232622006_7730376709672796160_n.jpg?_nc_cat=103&_nc_sid=09cbfe&_nc_oc=AQkygazu9iqQXj5FuvWPC8qBL7uRHBqx-F2G_81fw7suIPZND97y63VgFWOctr885EU&_nc_ht=scontent.ftbs4-1.fna&oh=18dbee6b5f487d420d8dc778487000ad&oe=5EE57572",
-              alt: ""
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "ml-4" }, [
-          _c("div", { staticClass: "text-sm font-bold" }, [
-            _vm._v("name user")
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "text-sm text-gray-500" }, [
-            _vm._v("29 min")
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "mt-4" }, [_c("p", [_vm._v("some crap post")])])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "w-full" }, [
+    return _c("div", { staticClass: "w-8" }, [
       _c("img", {
-        staticClass: "w-full",
+        staticClass: "border border-blue-400 w-8 h-8 object-cover rounded-full",
         attrs: {
           src:
-            "https://images.unsplash.com/photo-1589526603318-2c0ba291ffc0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1789&q=80",
-          alt: "post img"
+            "https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.0-9/72350364_2874054232622006_7730376709672796160_n.jpg?_nc_cat=103&_nc_sid=09cbfe&_nc_oc=AQkygazu9iqQXj5FuvWPC8qBL7uRHBqx-F2G_81fw7suIPZND97y63VgFWOctr885EU&_nc_ht=scontent.ftbs4-1.fna&oh=18dbee6b5f487d420d8dc778487000ad&oe=5EE57572",
+          alt: ""
         }
       })
     ])
@@ -20317,7 +20334,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [_c("p", [_vm._v("87 Comments")])])
+    return _c("div", [_c("p", [_vm._v("89 Comments")])])
   }
 ]
 render._withStripped = true
@@ -20383,8 +20400,22 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "flex flex-col items-center py-4" },
-    [_c("NewPost"), _vm._v(" "), _c("Post")],
-    1
+    [
+      _c("NewPost"),
+      _vm._v(" "),
+      _vm.posts
+        ? [
+            _vm._l(_vm.posts.data, function(post) {
+              return _c("Post", {
+                key: post.data.post_id,
+                attrs: { post: post }
+              })
+            }),
+            _vm._v("sdsds\n  ")
+          ]
+        : _vm._e()
+    ],
+    2
   )
 }
 var staticRenderFns = []

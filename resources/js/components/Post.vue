@@ -10,18 +10,18 @@
           />
         </div>
         <div class="ml-4">
-          <div class="text-sm font-bold">name user</div>
-          <div class="text-sm text-gray-500">29 min</div>
+          <div class="text-sm font-bold">{{post.data.attributes.posted_by.data.attributes.name}}</div>
+          <div class="text-sm text-gray-500">{{post.data.attributes.posted_at}}</div>
         </div>
       </div>
       <div class="mt-4">
-        <p>some crap post</p>
+        <p>{{post.data.attributes.body}}</p>
       </div>
     </div>
-    <div class="w-full">
+    <div class="w-full" v-if="post.data.attributes.image">
       <img
-        class="w-full"
-        src="https://images.unsplash.com/photo-1589526603318-2c0ba291ffc0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1789&q=80"
+        class="w-full h-64 object-cover object-center"
+        :src="post.data.attributes.image"
         alt="post img"
       />
     </div>
@@ -39,7 +39,7 @@
         <p class="ml-1">Gio and 299 others</p>
       </div>
       <div>
-        <p>87 Comments</p>
+        <p>89 Comments</p>
       </div>
     </div>
     <div class="flex justify-between border-1 border-gray-400 m4">
@@ -68,6 +68,12 @@
 </template>
 <script>
 export default {
-  name: "Post"
+  name: "Post",
+  props: {
+    post: {
+      type: Object,
+      required: true
+    }
+  }
 };
 </script>

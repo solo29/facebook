@@ -23,7 +23,7 @@ class PostToTimelineTest extends TestCase
                 'data' => [
                     'type' => 'posts',
                     'attributes' => [
-                        'body' => 'testing body'
+                        'body' => 'testing body',
                     ]
                 ]
             ]

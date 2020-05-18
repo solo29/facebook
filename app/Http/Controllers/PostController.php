@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Post as PostResource;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\PostCollection;
 use App\Post;
 use Illuminate\Http\Request;

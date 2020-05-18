@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Friend;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Friend extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,18 +17,15 @@ class Friend extends JsonResource
     {
         return [
             'data' => [
-                'type' => 'friend-request',
-                'friend_request_id' => $this->id,
+                'type' => 'users',
+                'user_id' => $this->id,
                 'attributes' => [
-                    'confirmed_at' => optional($this->confirmed_at)->diffForHumans(),
-                    'status' => $this->status,
-                    // 'user_id' => $user->id,
-                    // 'friend_id' => $friendRequset->user_id,
+                    'name' => $this->name,
+                    'friendship' => new FriendResource(Friend::friendship($this->id)),
                 ]
-
             ],
             'links' => [
-                'self' => url('/users/' . $this->friend_id)
+                'self' => url('/users/' . $this->id)
             ]
         ];
     }

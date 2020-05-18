@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 

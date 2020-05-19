@@ -1,14 +1,24 @@
 const state = {
     user: null,
-    userStatus: null
+    posts: null,
+    userStatus: null,
+    postsStatus: null
 };
 
 const getters = {
     user: state => state.user,
-    userStatus: state => state.userStatus,
+    status: state => ({
+        user: state.userStatus,
+        posts: state.postsStatus
+    }),
+    posts: state => state.posts,
 
     friendship: state => state.user.data.attributes.friendship,
     friendButtonText: (state, getters, rootState) => {
+        if (rootState.User.user.data.user_id === state.user.data.user_id) {
+            return "";
+        }
+
         if (getters.friendship === null) {
             return "Add Friend";
         } else if (
@@ -26,6 +36,19 @@ const getters = {
 };
 
 const actions = {
+    fetchUserPosts({ commit }, userId) {
+        commit("setPostsStatus", "loading");
+        axios
+            .get("/api/users/" + userId + "/posts")
+            .then(res => {
+                commit("setPosts", res.data);
+                commit("setPostsStatus", "success");
+            })
+            .catch(e => {
+                console.error("Unable to fetch posts");
+                commit("setPostsStatus", "error");
+            });
+    },
     fetchUser({ commit, dispatch }, userId) {
         commit("setUserStatus", "loading");
         axios
@@ -39,7 +62,8 @@ const actions = {
                 commit("setUserStatus", "error");
             });
     },
-    sendFriendRequest({ commit }, friendId) {
+    sendFriendRequest({ commit, getters }, friendId) {
+        if (getters.friendButtonText != "Add Friend") return;
         axios
             .post("/api/friend-request", { friend_id: friendId })
             .then(response => {
@@ -85,6 +109,12 @@ const mutations = {
     },
     setUserStatus(state, status) {
         state.userStatus = status;
+    },
+    setPostsStatus(state, status) {
+        state.postsStatus = status;
+    },
+    setPosts(state, posts) {
+        state.posts = posts;
     }
 };
 

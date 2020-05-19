@@ -56,16 +56,16 @@ class FriendsTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $user = $this->signIn();
+        $this->signIn();
         $anotherUser = factory(User::class)->create();
 
         $this->post('/api/friend-request', [
             'friend_id' => $anotherUser->id,
         ])->assertStatus(200);
 
-        // $this->post('/api/friend-request', [
-        //     'friend_id' => $anotherUser->id,
-        // ])->assertStatus(200);
+        $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(200);
 
         $this->assertEquals(1, \App\Friend::count());
     }

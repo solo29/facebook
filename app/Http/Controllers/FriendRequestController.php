@@ -28,7 +28,7 @@ class FriendRequestController extends Controller
 
         try {
 
-            User::findOrFail($data['friend_id'])->friends()->attach(auth()->user());
+            User::findOrFail($data['friend_id'])->friends()->syncWithoutdetaching(auth()->user());
         } catch (ModelNotFoundException $e) {
             throw new UserNotFoundException();
         }

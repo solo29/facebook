@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col items-center">
-    <p v-if="userStatus=='loading'">.. user loading</p>
+  <div class="flex flex-col items-center" v-if="status.user ==='success'">
+    <p v-if="status.user=='loading'">.. user loading</p>
     <div v-else-if="user" class="relative mb-8">
       <div class="w-100 h-64 overflow-hidden z-10">
         <img
@@ -37,10 +37,9 @@
         >Ignore</button>
       </div>
     </div>
-    <p v-if="postLoading">..loading</p>
+    <div v-if="status.posts==='loading'">..loading</div>
+    <div v-else-if="status.posts ==='success'&&posts.length<1">No posts found.</div>
     <Post v-else v-for="post in posts.data" :key="post.data.post_id" :post="post"></Post>
-
-    <p v-if="!postLoading&&!posts.data">No posts found.</p>
   </div>
 </template>
 <script>
@@ -51,31 +50,18 @@ export default {
   components: {
     Post
   },
-  data() {
-    return {
-      posts: [],
-      postLoading: true
-    };
-  },
+
   computed: {
     ...mapGetters({
+      status: "status",
       user: "user",
-      userStatus: "userStatus",
-      friendButtonText: "friendButtonText"
+      friendButtonText: "friendButtonText",
+      posts: "posts"
     })
   },
   mounted() {
     this.$store.dispatch("fetchUser", this.$route.params.userId);
-
-    axios
-      .get("/api/users/" + this.$route.params.userId + "/posts")
-      .then(res => {
-        this.posts = res.data;
-      })
-      .catch(e => {
-        console.error("Unable to fetch posts");
-      })
-      .finally(() => (this.postLoading = false));
+    this.$store.dispatch("fetchUserPosts", this.$route.params.userId);
   }
 };
 </script>

@@ -1910,6 +1910,13 @@ module.exports = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Nav__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Nav */ "./resources/js/components/Nav.vue");
 /* harmony import */ var _SideBar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SideBar */ "./resources/js/components/SideBar.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -1922,6 +1929,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1930,6 +1938,7 @@ __webpack_require__.r(__webpack_exports__);
     Nav: _Nav__WEBPACK_IMPORTED_MODULE_0__["default"],
     SideBar: _SideBar__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(["authUser"])),
   mounted: function mounted() {
     this.$store.dispatch("fetchAuthUser");
     this.$store.dispatch("changePageTitle", this.$route.meta.title);
@@ -1959,36 +1968,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -2230,6 +2209,13 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Post__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Post */ "./resources/js/components/Post.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2254,6 +2240,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Show",
@@ -2262,22 +2270,19 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      user: {},
       posts: [],
-      userLoading: true,
       postLoading: true
     };
   },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])({
+    user: "user",
+    userStatus: "userStatus",
+    friendButtonText: "friendButtonText"
+  })),
   mounted: function mounted() {
     var _this = this;
 
-    axios.get("/api/users/" + this.$route.params.userId).then(function (response) {
-      _this.user = response.data;
-    })["catch"](function (e) {
-      console.error(e);
-    })["finally"](function () {
-      return _this.userLoading = false;
-    });
+    this.$store.dispatch("fetchUser", this.$route.params.userId);
     axios.get("/api/users/" + this.$route.params.userId + "/posts").then(function (res) {
       _this.posts = res.data;
     })["catch"](function (e) {
@@ -20581,30 +20586,32 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "flex flex-col flex-1 h-screen overflow-y-hidden" },
-    [
-      _c("Nav"),
-      _vm._v(" "),
-      _c(
+  return _vm.authUser
+    ? _c(
         "div",
-        { staticClass: "overflow-y-hidden flex-1 flex" },
+        { staticClass: "flex flex-col flex-1 h-screen overflow-y-hidden" },
         [
-          _c("SideBar"),
+          _c("Nav"),
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "overflow-x-hidden w-2/3" },
-            [_c("router-view")],
+            { staticClass: "overflow-y-hidden flex-1 flex" },
+            [
+              _c("SideBar"),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "overflow-x-hidden w-2/3" },
+                [_c("router-view", { key: _vm.$route.fullPath })],
+                1
+              )
+            ],
             1
           )
         ],
         1
       )
-    ],
-    1
-  )
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -21147,9 +21154,10 @@ var render = function() {
     "div",
     { staticClass: "flex flex-col items-center" },
     [
-      _vm.userLoading
+      _vm.userStatus == "loading"
         ? _c("p", [_vm._v(".. user loading")])
-        : _c("div", { staticClass: "relative mb-8" }, [
+        : _vm.user
+        ? _c("div", { staticClass: "relative mb-8" }, [
             _vm._m(0),
             _vm._v(" "),
             _c(
@@ -21165,8 +21173,72 @@ var render = function() {
                   _vm._v(_vm._s(_vm.user.data.attributes.name))
                 ])
               ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "absolute bottom-0 right-0 mr-12 mb-4 z-20 flex items-center"
+              },
+              [
+                _vm.friendButtonText && _vm.friendButtonText !== "Accept"
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "py-1 px-3 bg-gray-400 rounded",
+                        on: {
+                          click: function($event) {
+                            return _vm.$store.dispatch(
+                              "sendFriendRequest",
+                              _vm.$route.params.userId
+                            )
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm.friendButtonText))]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.friendButtonText && _vm.friendButtonText === "Accept"
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "mr-2 py-1 px-3 bg-blue-500 rounded",
+                        on: {
+                          click: function($event) {
+                            return _vm.$store.dispatch(
+                              "acceptFriendRequest",
+                              _vm.$route.params.userId
+                            )
+                          }
+                        }
+                      },
+                      [_vm._v("Accept")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.friendButtonText && _vm.friendButtonText === "Accept"
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "mr-2 py-1 px-3 bg-gray-400 rounded",
+                        on: {
+                          click: function($event) {
+                            return _vm.$store.dispatch(
+                              "ignoreFriendRequest",
+                              _vm.$route.params.userId
+                            )
+                          }
+                        }
+                      },
+                      [_vm._v("Ignore")]
+                    )
+                  : _vm._e()
+              ]
             )
-          ]),
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _vm.postLoading
         ? _c("p", [_vm._v("..loading")])
@@ -21189,7 +21261,11 @@ var staticRenderFns = [
     return _c("div", { staticClass: "w-100 h-64 overflow-hidden z-10" }, [
       _c("img", {
         staticClass: "object-cover with-full",
-        attrs: { src: "https://source.unsplash.com/random/800x600", alt: "" }
+        attrs: {
+          src:
+            "https://images.unsplash.com/photo-1589050590928-b7a42c4e3f12?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=685&ixlib=rb-1.2.1&q=80&w=800",
+          alt: ""
+        }
       })
     ])
   },
@@ -37946,6 +38022,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/user */ "./resources/js/store/modules/user.js");
 /* harmony import */ var _modules_title__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/title */ "./resources/js/store/modules/title.js");
+/* harmony import */ var _modules_profile__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/profile */ "./resources/js/store/modules/profile.js");
+
 
 
 
@@ -37954,9 +38032,112 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   modules: {
     User: _modules_user__WEBPACK_IMPORTED_MODULE_2__["default"],
-    Title: _modules_title__WEBPACK_IMPORTED_MODULE_3__["default"]
+    Title: _modules_title__WEBPACK_IMPORTED_MODULE_3__["default"],
+    Profile: _modules_profile__WEBPACK_IMPORTED_MODULE_4__["default"]
   }
 }));
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/profile.js":
+/*!***********************************************!*\
+  !*** ./resources/js/store/modules/profile.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var state = {
+  user: null,
+  userStatus: null
+};
+var getters = {
+  user: function user(state) {
+    return state.user;
+  },
+  userStatus: function userStatus(state) {
+    return state.userStatus;
+  },
+  friendship: function friendship(state) {
+    return state.user.data.attributes.friendship;
+  },
+  friendButtonText: function friendButtonText(state, getters, rootState) {
+    if (getters.friendship === null) {
+      return "Add Friend";
+    } else if (getters.friendship.data.attributes.confirmed_at === null && getters.friendship.data.attributes.friend_id === rootState.User.user.data.user_id) {
+      return "Pending Friend Request";
+    } else if (getters.friendship.data.attributes.confirmed_at !== null) {
+      return "";
+    }
+
+    return "Accept";
+  }
+};
+var actions = {
+  fetchUser: function fetchUser(_ref, userId) {
+    var commit = _ref.commit,
+        dispatch = _ref.dispatch;
+    commit("setUserStatus", "loading");
+    axios.get("/api/users/" + userId).then(function (response) {
+      commit("setUser", response.data);
+      commit("setUserStatus", "success");
+    })["catch"](function (e) {
+      console.error(e);
+      commit("setUserStatus", "error");
+    });
+  },
+  sendFriendRequest: function sendFriendRequest(_ref2, friendId) {
+    var commit = _ref2.commit;
+    axios.post("/api/friend-request", {
+      friend_id: friendId
+    }).then(function (response) {
+      commit("setUserFriendship", response.data);
+    })["catch"](function (e) {
+      console.error(e);
+    });
+  },
+  acceptFriendRequest: function acceptFriendRequest(_ref3, userId) {
+    var commit = _ref3.commit;
+    axios.post("/api/friend-request-response", {
+      user_id: userId,
+      status: 1
+    }).then(function (response) {
+      commit("setUserFriendship", response.data);
+    })["catch"](function (e) {
+      console.error(e);
+    });
+  },
+  ignoreFriendRequest: function ignoreFriendRequest(_ref4, userId) {
+    var commit = _ref4.commit;
+    axios["delete"]("/api/friend-request-response/delete", {
+      data: {
+        user_id: userId
+      }
+    }).then(function (response) {
+      commit("setUserFriendship", null);
+    })["catch"](function (e) {
+      console.error(e);
+    });
+  }
+};
+var mutations = {
+  setUser: function setUser(state, user) {
+    state.user = user;
+  },
+  setUserFriendship: function setUserFriendship(state, friendship) {
+    state.user.data.attributes.friendship = friendship;
+  },
+  setUserStatus: function setUserStatus(state, status) {
+    state.userStatus = status;
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = ({
+  state: state,
+  getters: getters,
+  actions: actions,
+  mutations: mutations
+});
 
 /***/ }),
 

@@ -50,6 +50,26 @@ class FriendsTest extends TestCase
         ]);
     }
 
+
+    /** @test */
+    public function unique_friends_request()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = $this->signIn();
+        $anotherUser = factory(User::class)->create();
+
+        $this->post('/api/friend-request', [
+            'friend_id' => $anotherUser->id,
+        ])->assertStatus(200);
+
+        // $this->post('/api/friend-request', [
+        //     'friend_id' => $anotherUser->id,
+        // ])->assertStatus(200);
+
+        $this->assertEquals(1, \App\Friend::count());
+    }
+
     /** @test */
     public function only_valid_users_can_be_requested()
     {
@@ -108,8 +128,8 @@ class FriendsTest extends TestCase
                 'attributes' => [
                     'confirmed_at' => $friendRequset->confirmed_at->diffForHumans(),
                     'status' => 1,
-                    // 'user_id' => $user->id,
-                    // 'friend_id' => $friendRequset->user_id,
+                    'user_id' => $user->id,
+                    'friend_id' => $friendRequset->user_id,
                 ]
 
             ],

@@ -1,9 +1,13 @@
 <template>
   <div class="flex flex-col items-center">
-    <p v-if="userLoading">.. user loading</p>
-    <div v-else class="relative mb-8">
+    <p v-if="userStatus=='loading'">.. user loading</p>
+    <div v-else-if="user" class="relative mb-8">
       <div class="w-100 h-64 overflow-hidden z-10">
-        <img class="object-cover with-full" src="https://source.unsplash.com/random/800x600" alt />
+        <img
+          class="object-cover with-full"
+          src="https://images.unsplash.com/photo-1589050590928-b7a42c4e3f12?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=685&ixlib=rb-1.2.1&q=80&w=800"
+          alt
+        />
       </div>
       <div class="absolute bottom-0 left-0 ml-12 -mb-8 z-20 flex items-center">
         <div class="w-32">
@@ -15,6 +19,23 @@
         </div>
         <p class="ml-4 text-2xl text-gray-100">{{user.data.attributes.name}}</p>
       </div>
+      <div class="absolute bottom-0 right-0 mr-12 mb-4 z-20 flex items-center">
+        <button
+          v-if="friendButtonText && friendButtonText!=='Accept'"
+          class="py-1 px-3 bg-gray-400 rounded"
+          @click="$store.dispatch('sendFriendRequest',$route.params.userId)"
+        >{{friendButtonText}}</button>
+        <button
+          v-if="friendButtonText && friendButtonText==='Accept'"
+          class="mr-2 py-1 px-3 bg-blue-500 rounded"
+          @click="$store.dispatch('acceptFriendRequest',$route.params.userId)"
+        >Accept</button>
+        <button
+          v-if="friendButtonText && friendButtonText==='Accept'"
+          class="mr-2 py-1 px-3 bg-gray-400 rounded"
+          @click="$store.dispatch('ignoreFriendRequest',$route.params.userId)"
+        >Ignore</button>
+      </div>
     </div>
     <p v-if="postLoading">..loading</p>
     <Post v-else v-for="post in posts.data" :key="post.data.post_id" :post="post"></Post>
@@ -24,6 +45,7 @@
 </template>
 <script>
 import Post from "../components/Post";
+import { mapGetters } from "vuex";
 export default {
   name: "Show",
   components: {
@@ -31,22 +53,19 @@ export default {
   },
   data() {
     return {
-      user: {},
       posts: [],
-      userLoading: true,
       postLoading: true
     };
   },
+  computed: {
+    ...mapGetters({
+      user: "user",
+      userStatus: "userStatus",
+      friendButtonText: "friendButtonText"
+    })
+  },
   mounted() {
-    axios
-      .get("/api/users/" + this.$route.params.userId)
-      .then(response => {
-        this.user = response.data;
-      })
-      .catch(e => {
-        console.error(e);
-      })
-      .finally(() => (this.userLoading = false));
+    this.$store.dispatch("fetchUser", this.$route.params.userId);
 
     axios
       .get("/api/users/" + this.$route.params.userId + "/posts")

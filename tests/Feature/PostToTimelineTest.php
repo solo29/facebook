@@ -19,14 +19,7 @@ class PostToTimelineTest extends TestCase
         $user = $this->signIn();
         $response = $this->post(
             '/api/posts',
-            [
-                'data' => [
-                    'type' => 'posts',
-                    'attributes' => [
-                        'body' => 'testing body',
-                    ]
-                ]
-            ]
+            ['body' => 'testing body']
         )->assertStatus(201);
 
         $posts =  \App\Post::all();

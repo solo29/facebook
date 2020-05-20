@@ -9,13 +9,21 @@
         />
       </div>
     </div>
-    <div class="flex-1 mx-4">
+    <div class="flex-1 mx-4 flex">
       <input
+        v-model="postMessage"
         type="text"
         name="body"
         class="w-full h-8 pl-4 bg-gray-200 rounded-full text-sm focus:outline-none focus:shadow-outline"
         placeholder="Add a post"
       />
+      <transition name="fade">
+        <button
+          v-if="postMessage"
+          @click="$store.dispatch('postMessage')"
+          class="bg-gray-200 ml-2 px-3 py-1 rounded-full"
+        >Post</button>
+      </transition>
     </div>
 
     <div>
@@ -30,7 +38,27 @@
   </div>
 </template>
 <script>
+import _ from "lodash";
 export default {
-  name: "NewPost"
+  name: "NewPost",
+  computed: {
+    postMessage: {
+      get() {
+        return this.$store.getters.postMessage;
+      },
+      set: _.debounce(function(postMessage) {
+        this.$store.commit("updateMessage", postMessage);
+      }, 300)
+    }
+  }
 };
 </script>
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

@@ -35,11 +35,11 @@ class PostController extends Controller
     {
 
         $data = request()->validate([
-            'data.attributes.body' => '',
+            'body' => '',
             //'data.attributes.image' => ''
         ]);
 
-        $post = request()->user()->posts()->create($data['data']['attributes']);
+        $post = request()->user()->posts()->create($data);
 
         return new PostResource($post);
     }

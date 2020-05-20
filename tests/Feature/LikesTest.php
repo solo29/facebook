@@ -44,4 +44,45 @@ class LikesTest extends TestCase
 
         ]);
     }
+
+    /** @test */
+    public function post_returns_with_likes()
+    {
+        $user = $this->signIn();
+        $post = factory(Post::class)->create(['id' => 123, 'user_id' => $user->id]);
+
+        $this->post('/api/posts/' . $post->id . '/like')->assertStatus(200);
+
+
+        $this->get('/api/posts')
+            ->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    [
+                        'data' => [
+                            'type' => 'posts',
+                            'attributes' => [
+                                'likes' => [
+                                    'data' => [
+                                        [
+                                            'data' => [
+                                                'type' => 'likes',
+                                                'like_id' => 1,
+                                                'attributes' => []
+                                            ]
+                                        ]
+                                    ],
+                                    'like_count' => 1,
+                                    'user_likes_post' => true
+                                ],
+                            ]
+                        ]
+                    ]
+                ],
+                'links' => [
+                    'self' => url('/posts')
+                ]
+
+            ]);
+    }
 }

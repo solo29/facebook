@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Comment;
 use App\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -66,13 +67,38 @@ class PostCommenetTest extends TestCase
         ]);
     }
 
+
     /** @test */
-    public function post_returns_with_likes()
+    public function body_is_required_for_comment()
+    {
+
+        $user = $this->signIn();
+        $post = factory(Post::class)->create(['id' => 123]);
+
+        $response = $this->post(
+            '/api/posts/' . $post->id . '/comment',
+            ['body' => '']
+        )->assertStatus(422)
+            ->assertJsonStructure(
+                [
+                    'errors' => [
+                        'meta' => [
+                            'body'
+                        ]
+                    ]
+                ]
+            );
+    }
+
+    /** @test */
+    public function post_returns_with_comments()
     {
         $user = $this->signIn();
         $post = factory(Post::class)->create(['id' => 123, 'user_id' => $user->id]);
 
-        $this->post('/api/posts/' . $post->id . '/like')->assertStatus(200);
+        $this->post('/api/posts/' . $post->id . '/comment', ['body' => 'test comment'])->assertStatus(200);
+
+        $comment = Comment::first();
 
 
         $this->get('/api/posts')
@@ -83,18 +109,24 @@ class PostCommenetTest extends TestCase
                         'data' => [
                             'type' => 'posts',
                             'attributes' => [
-                                'likes' => [
+                                'comments' => [
                                     'data' => [
                                         [
                                             'data' => [
-                                                'type' => 'likes',
-                                                'like_id' => 1,
-                                                'attributes' => []
+                                                'type' => 'comments',
+                                                'comment_id' => $comment->id,
+                                                'attributes' => [
+
+                                                    'body' => 'test comment',
+                                                    'commented_at' => $comment->created_at->diffForHumans()
+                                                ]
+                                            ],
+                                            'links' => [
+                                                'self' => url('/posts/' . $post->id)
                                             ]
                                         ]
-                                    ],
-                                    'like_count' => 1,
-                                    'user_likes_post' => true
+                                    ]
+
                                 ],
                             ]
                         ]

@@ -2190,8 +2190,53 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Post",
+  data: function data() {
+    return {
+      showComments: false,
+      commentBody: ""
+    };
+  },
   props: {
     post: {
       type: Object,
@@ -21094,7 +21139,14 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _vm._m(1)
+          _c("div", [
+            _c("p", [
+              _vm._v(
+                _vm._s(_vm.post.data.attributes.comments.comment_count) +
+                  " Comments"
+              )
+            ])
+          ])
         ]
       ),
       _vm._v(" "),
@@ -21146,7 +21198,12 @@ var render = function() {
             "button",
             {
               staticClass:
-                "flex rounded-lg text-sm text-gray-700 focus:outline-none w-full hover:bg-gray-200 justify-center py-2 items-center"
+                "flex rounded-lg text-sm text-gray-700 focus:outline-none w-full hover:bg-gray-200 justify-center py-2 items-center",
+              on: {
+                click: function($event) {
+                  _vm.showComments = !_vm.showComments
+                }
+              }
             },
             [
               _c(
@@ -21172,6 +21229,126 @@ var render = function() {
             ]
           )
         ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showComments,
+              expression: "showComments"
+            }
+          ],
+          staticClass: "mt-1 p-4 pt-2 border-gray-400"
+        },
+        [
+          _c("div", { staticClass: "flex" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.commentBody,
+                  expression: "commentBody"
+                }
+              ],
+              staticClass:
+                "w-full h-8 pl-4 bg-gray-200 rounded text-sm focus:outline-none",
+              attrs: { name: "comment", type: "text" },
+              domProps: { value: _vm.commentBody },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.commentBody = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm.commentBody
+              ? _c(
+                  "button",
+                  {
+                    staticClass:
+                      "bg-gray-200 ml-2 px-2 py-1 text-sm focus:outline-none rounded-lg",
+                    on: {
+                      click: function($event) {
+                        _vm.$store.dispatch("commentPost", {
+                          commentBody: _vm.commentBody,
+                          postId: _vm.post.data.post_id
+                        })
+                        _vm.commentBody = ""
+                      }
+                    }
+                  },
+                  [_vm._v("Comment")]
+                )
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.post.data.attributes.comments.data, function(comment) {
+            return _c(
+              "div",
+              {
+                key: comment.comment_id,
+                staticClass: "flex flex-row my-4 items-center"
+              },
+              [
+                _c("img", {
+                  staticClass: "w-8 h-8",
+                  attrs: {
+                    src:
+                      "https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.0-9/72350364_2874054232622006_7730376709672796160_n.jpg?_nc_cat=103&_nc_sid=09cbfe&_nc_oc=AQkygazu9iqQXj5FuvWPC8qBL7uRHBqx-F2G_81fw7suIPZND97y63VgFWOctr885EU&_nc_ht=scontent.ftbs4-1.fna&oh=18dbee6b5f487d420d8dc778487000ad&oe=5EE57572",
+                    alt: ""
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "ml-4 flex-1" }, [
+                  _c(
+                    "div",
+                    { staticClass: "bg-gray-200 rounded-lg p-2 text-sm" },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "font-bold text-blue-600",
+                          attrs: {
+                            href:
+                              "/users/" +
+                              comment.data.attributes.commented_by.data.user_id
+                          }
+                        },
+                        [
+                          _vm._v(
+                            _vm._s(
+                              comment.data.attributes.commented_by.data
+                                .attributes.name
+                            )
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("p", { staticClass: "inline" }, [
+                        _vm._v(_vm._s(comment.data.attributes.body))
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "text-xs pl-2" }, [
+                    _c("p", [
+                      _vm._v(_vm._s(comment.data.attributes.commented_at))
+                    ])
+                  ])
+                ])
+              ]
+            )
+          })
+        ],
+        2
       )
     ]
   )
@@ -21191,12 +21368,6 @@ var staticRenderFns = [
         }
       })
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [_c("p", [_vm._v("89 Comments")])])
   }
 ]
 render._withStripped = true
@@ -38236,15 +38407,30 @@ var actions = {
     })["catch"](function (e) {
       console.error(e);
     });
+  },
+  commentPost: function commentPost(_ref4, _ref5) {
+    var commit = _ref4.commit;
+    var postId = _ref5.postId,
+        commentBody = _ref5.commentBody;
+    axios.post("/api/posts/" + postId + "/comment", {
+      body: commentBody
+    }).then(function (res) {
+      commit("pushComment", {
+        postId: postId,
+        data: res.data
+      });
+    })["catch"](function (e) {
+      console.error(e);
+    });
   }
 };
 var mutations = {
   pushPost: function pushPost(state, post) {
     state.newsPosts.data.unshift(post);
   },
-  pushLikes: function pushLikes(state, _ref4) {
-    var postId = _ref4.postId,
-        data = _ref4.data;
+  pushLikes: function pushLikes(state, _ref6) {
+    var postId = _ref6.postId,
+        data = _ref6.data;
     var index = state.newsPosts.data.findIndex(function (el) {
       return el.data.post_id == postId;
     });
@@ -38252,6 +38438,18 @@ var mutations = {
     if (index >= 0) {
       //console.log(index, data);
       state.newsPosts.data[index].data.attributes.likes = data;
+    }
+  },
+  pushComment: function pushComment(state, _ref7) {
+    var postId = _ref7.postId,
+        data = _ref7.data;
+    var index = state.newsPosts.data.findIndex(function (el) {
+      return el.data.post_id == postId;
+    });
+
+    if (index >= 0) {
+      //console.log(index, data);
+      state.newsPosts.data[index].data.attributes.comments = data;
     }
   },
   setPosts: function setPosts(state, posts) {

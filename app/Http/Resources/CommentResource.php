@@ -20,7 +20,7 @@ class CommentResource extends JsonResource
                 'comment_id' => $this->id,
                 'attributes' => [
                     'commented_by' => new UserResource($this->user),
-                    'body' => 'test comment',
+                    'body' => $this->body,
                     'commented_at' => $this->created_at->diffForHumans()
                 ]
             ],

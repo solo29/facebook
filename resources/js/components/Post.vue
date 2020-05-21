@@ -39,7 +39,7 @@
         <p class="ml-1">{{post.data.attributes.likes.like_count}} Likes</p>
       </div>
       <div>
-        <p>89 Comments</p>
+        <p>{{post.data.attributes.comments.comment_count}} Comments</p>
       </div>
     </div>
     <div class="flex justify-between border-1 border-gray-400 m4">
@@ -56,6 +56,7 @@
         <p class="ml-2">Like</p>
       </button>
       <button
+        @click="showComments=!showComments"
         class="flex rounded-lg text-sm text-gray-700 focus:outline-none w-full hover:bg-gray-200 justify-center py-2 items-center"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="fill-current w-5 h-5">
@@ -66,11 +67,55 @@
         <p class="ml-2">Comment</p>
       </button>
     </div>
+    <div v-show="showComments" class="mt-1 p-4 pt-2 border-gray-400">
+      <div class="flex">
+        <input
+          v-model="commentBody"
+          name="comment"
+          type="text"
+          class="w-full h-8 pl-4 bg-gray-200 rounded text-sm focus:outline-none"
+        />
+        <button
+          @click="$store.dispatch('commentPost', { commentBody, postId: post.data.post_id}); commentBody=''"
+          v-if="commentBody"
+          class="bg-gray-200 ml-2 px-2 py-1 text-sm focus:outline-none rounded-lg"
+        >Comment</button>
+      </div>
+      <div
+        class="flex flex-row my-4 items-center"
+        v-for="comment in post.data.attributes.comments.data"
+        :key="comment.comment_id"
+      >
+        <img
+          class="w-8 h-8"
+          src="https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.0-9/72350364_2874054232622006_7730376709672796160_n.jpg?_nc_cat=103&_nc_sid=09cbfe&_nc_oc=AQkygazu9iqQXj5FuvWPC8qBL7uRHBqx-F2G_81fw7suIPZND97y63VgFWOctr885EU&_nc_ht=scontent.ftbs4-1.fna&oh=18dbee6b5f487d420d8dc778487000ad&oe=5EE57572"
+          alt
+        />
+        <div class="ml-4 flex-1">
+          <div class="bg-gray-200 rounded-lg p-2 text-sm">
+            <a
+              class="font-bold text-blue-600"
+              :href="'/users/'+comment.data.attributes.commented_by.data.user_id"
+            >{{comment.data.attributes.commented_by.data.attributes.name}}</a>
+            <p class="inline">{{comment.data.attributes.body}}</p>
+          </div>
+          <div class="text-xs pl-2">
+            <p>{{comment.data.attributes.commented_at}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 export default {
   name: "Post",
+  data() {
+    return {
+      showComments: false,
+      commentBody: ""
+    };
+  },
   props: {
     post: {
       type: Object,

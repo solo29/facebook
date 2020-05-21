@@ -45,8 +45,9 @@ class PostCommenetTest extends TestCase
                                 'data' => [
                                     'attributes' => [
                                         'name' => $user->name,
-                                        'user_id' => $user->id
-                                    ]
+
+                                    ],
+                                    'user_id' => $user->id
                                 ]
                             ],
                             'body' => 'test comment',

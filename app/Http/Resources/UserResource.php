@@ -21,6 +21,8 @@ class UserResource extends JsonResource
                 'user_id' => $this->id,
                 'attributes' => [
                     'name' => $this->name,
+                    'cover-image' => new UserImageResource($this->coverImage),
+                    'profile-image' => new UserImageResource($this->profileImage),
                     'friendship' => new FriendResource(Friend::friendship($this->id)),
                 ]
             ],

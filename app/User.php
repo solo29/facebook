@@ -52,4 +52,23 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
     }
+
+    public function images()
+    {
+        return $this->hasMany(UserImage::class);
+    }
+
+    public function coverImage()
+    {
+        return $this->hasOne(UserImage::class)
+            ->orderBy('id', 'desc')
+            ->where('location', 'cover');
+    }
+
+    public function profileImage()
+    {
+        return $this->hasOne(UserImage::class)
+            ->orderBy('id', 'desc')
+            ->where('location', 'profile');
+    }
 }

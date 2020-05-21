@@ -2328,6 +2328,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -21520,17 +21521,16 @@ var render = function() {
                 )
               ])
             : _vm._e(),
-          _vm._v(" "),
+          _vm._v("\n  " + _vm._s(_vm.status) + "\n  "),
           _vm.status.posts === "loading"
             ? _c("div", [_vm._v("..loading")])
             : _vm.status.posts === "success" && _vm.posts.length < 1
             ? _c("div", [_vm._v("No posts found.")])
-            : _vm._l(_vm.posts.data, function(post) {
-                return _c("Post", {
-                  key: post.data.post_id,
-                  attrs: { post: post }
-                })
-              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm._l(_vm.posts.data, function(post) {
+            return _c("Post", { key: post.data.post_id, attrs: { post: post } })
+          })
         ],
         2
       )

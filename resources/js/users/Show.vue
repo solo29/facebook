@@ -37,9 +37,10 @@
         >Ignore</button>
       </div>
     </div>
+    {{status}}
     <div v-if="status.posts==='loading'">..loading</div>
     <div v-else-if="status.posts ==='success'&&posts.length<1">No posts found.</div>
-    <Post v-else v-for="post in posts.data" :key="post.data.post_id" :post="post"></Post>
+    <Post v-for="post in posts.data" :key="post.data.post_id" :post="post"></Post>
   </div>
 </template>
 <script>

@@ -2390,7 +2390,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     Post: _components_Post__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])({
-    posts: "newsPosts",
+    posts: "posts",
     newsStatus: "newsStatus"
   })),
   mounted: function mounted() {
@@ -38355,24 +38355,35 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var state = {
-  newsPosts: null,
-  newsPostsStatus: null,
+  posts: null,
+  postsStatus: null,
   postMessage: ""
 };
 var getters = {
-  newsPosts: function newsPosts(state) {
-    return state.newsPosts;
+  posts: function posts(state) {
+    return state.posts;
   },
   newsStatus: function newsStatus(state) {
-    return state.newsPostsStatus;
+    return state.postsStatus;
   },
   postMessage: function postMessage(state) {
     return state.postMessage;
   }
 };
 var actions = {
-  fetchNewsPosts: function fetchNewsPosts(_ref, title) {
+  fetchUserPosts: function fetchUserPosts(_ref, userId) {
     var commit = _ref.commit;
+    commit("setPostsStatus", "loading");
+    axios.get("/api/users/" + userId + "/posts").then(function (res) {
+      commit("setPosts", res.data);
+      commit("setPostsStatus", "success");
+    })["catch"](function (e) {
+      console.error("Unable to fetch posts");
+      commit("setPostsStatus", "error");
+    });
+  },
+  fetchNewsPosts: function fetchNewsPosts(_ref2, title) {
+    var commit = _ref2.commit;
     commit("setPostsStatus", "loading");
     axios.get("api/posts").then(function (res) {
       commit("setPosts", res.data);
@@ -38382,9 +38393,9 @@ var actions = {
       commit("setPostsStatus", "error");
     });
   },
-  postMessage: function postMessage(_ref2, title) {
-    var commit = _ref2.commit,
-        state = _ref2.state;
+  postMessage: function postMessage(_ref3, title) {
+    var commit = _ref3.commit,
+        state = _ref3.state;
     axios.post("api/posts", {
       body: state.postMessage
     }).then(function (res) {
@@ -38395,9 +38406,9 @@ var actions = {
       commit("setPostsStatus", "error");
     });
   },
-  likePost: function likePost(_ref3, postId) {
-    var commit = _ref3.commit,
-        state = _ref3.state;
+  likePost: function likePost(_ref4, postId) {
+    var commit = _ref4.commit,
+        state = _ref4.state;
     axios.post("/api/posts/" + postId + "/like").then(function (res) {
       commit("pushLikes", {
         postId: postId,
@@ -38408,10 +38419,10 @@ var actions = {
       console.error(e);
     });
   },
-  commentPost: function commentPost(_ref4, _ref5) {
-    var commit = _ref4.commit;
-    var postId = _ref5.postId,
-        commentBody = _ref5.commentBody;
+  commentPost: function commentPost(_ref5, _ref6) {
+    var commit = _ref5.commit;
+    var postId = _ref6.postId,
+        commentBody = _ref6.commentBody;
     axios.post("/api/posts/" + postId + "/comment", {
       body: commentBody
     }).then(function (res) {
@@ -38426,37 +38437,37 @@ var actions = {
 };
 var mutations = {
   pushPost: function pushPost(state, post) {
-    state.newsPosts.data.unshift(post);
+    state.posts.data.unshift(post);
   },
-  pushLikes: function pushLikes(state, _ref6) {
-    var postId = _ref6.postId,
-        data = _ref6.data;
-    var index = state.newsPosts.data.findIndex(function (el) {
-      return el.data.post_id == postId;
-    });
-
-    if (index >= 0) {
-      //console.log(index, data);
-      state.newsPosts.data[index].data.attributes.likes = data;
-    }
-  },
-  pushComment: function pushComment(state, _ref7) {
+  pushLikes: function pushLikes(state, _ref7) {
     var postId = _ref7.postId,
         data = _ref7.data;
-    var index = state.newsPosts.data.findIndex(function (el) {
+    var index = state.posts.data.findIndex(function (el) {
       return el.data.post_id == postId;
     });
 
     if (index >= 0) {
       //console.log(index, data);
-      state.newsPosts.data[index].data.attributes.comments = data;
+      state.posts.data[index].data.attributes.likes = data;
+    }
+  },
+  pushComment: function pushComment(state, _ref8) {
+    var postId = _ref8.postId,
+        data = _ref8.data;
+    var index = state.posts.data.findIndex(function (el) {
+      return el.data.post_id == postId;
+    });
+
+    if (index >= 0) {
+      //console.log(index, data);
+      state.posts.data[index].data.attributes.comments = data;
     }
   },
   setPosts: function setPosts(state, posts) {
-    state.newsPosts = posts;
+    state.posts = posts;
   },
   setPostsStatus: function setPostsStatus(state, status) {
-    state.newsPostsStatus = status;
+    state.postsStatus = status;
   },
   updateMessage: function updateMessage(state, message) {
     state.postMessage = message;
@@ -38482,9 +38493,7 @@ var mutations = {
 __webpack_require__.r(__webpack_exports__);
 var state = {
   user: null,
-  posts: null,
-  userStatus: null,
-  postsStatus: null
+  userStatus: null
 };
 var getters = {
   user: function user(state) {
@@ -38495,9 +38504,6 @@ var getters = {
       user: state.userStatus,
       posts: state.postsStatus
     };
-  },
-  posts: function posts(state) {
-    return state.posts;
   },
   friendship: function friendship(state) {
     return state.user.data.attributes.friendship;
@@ -38519,20 +38525,9 @@ var getters = {
   }
 };
 var actions = {
-  fetchUserPosts: function fetchUserPosts(_ref, userId) {
-    var commit = _ref.commit;
-    commit("setPostsStatus", "loading");
-    axios.get("/api/users/" + userId + "/posts").then(function (res) {
-      commit("setPosts", res.data);
-      commit("setPostsStatus", "success");
-    })["catch"](function (e) {
-      console.error("Unable to fetch posts");
-      commit("setPostsStatus", "error");
-    });
-  },
-  fetchUser: function fetchUser(_ref2, userId) {
-    var commit = _ref2.commit,
-        dispatch = _ref2.dispatch;
+  fetchUser: function fetchUser(_ref, userId) {
+    var commit = _ref.commit,
+        dispatch = _ref.dispatch;
     commit("setUserStatus", "loading");
     axios.get("/api/users/" + userId).then(function (response) {
       commit("setUser", response.data);
@@ -38542,9 +38537,9 @@ var actions = {
       commit("setUserStatus", "error");
     });
   },
-  sendFriendRequest: function sendFriendRequest(_ref3, friendId) {
-    var commit = _ref3.commit,
-        getters = _ref3.getters;
+  sendFriendRequest: function sendFriendRequest(_ref2, friendId) {
+    var commit = _ref2.commit,
+        getters = _ref2.getters;
     if (getters.friendButtonText != "Add Friend") return;
     axios.post("/api/friend-request", {
       friend_id: friendId
@@ -38554,8 +38549,8 @@ var actions = {
       console.error(e);
     });
   },
-  acceptFriendRequest: function acceptFriendRequest(_ref4, userId) {
-    var commit = _ref4.commit;
+  acceptFriendRequest: function acceptFriendRequest(_ref3, userId) {
+    var commit = _ref3.commit;
     axios.post("/api/friend-request-response", {
       user_id: userId,
       status: 1
@@ -38565,8 +38560,8 @@ var actions = {
       console.error(e);
     });
   },
-  ignoreFriendRequest: function ignoreFriendRequest(_ref5, userId) {
-    var commit = _ref5.commit;
+  ignoreFriendRequest: function ignoreFriendRequest(_ref4, userId) {
+    var commit = _ref4.commit;
     axios["delete"]("/api/friend-request-response/delete", {
       data: {
         user_id: userId
@@ -38587,12 +38582,6 @@ var mutations = {
   },
   setUserStatus: function setUserStatus(state, status) {
     state.userStatus = status;
-  },
-  setPostsStatus: function setPostsStatus(state, status) {
-    state.postsStatus = status;
-  },
-  setPosts: function setPosts(state, posts) {
-    state.posts = posts;
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({

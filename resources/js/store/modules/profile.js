@@ -1,8 +1,6 @@
 const state = {
     user: null,
-    posts: null,
-    userStatus: null,
-    postsStatus: null
+    userStatus: null
 };
 
 const getters = {
@@ -11,7 +9,6 @@ const getters = {
         user: state.userStatus,
         posts: state.postsStatus
     }),
-    posts: state => state.posts,
 
     friendship: state => state.user.data.attributes.friendship,
     friendButtonText: (state, getters, rootState) => {
@@ -36,19 +33,6 @@ const getters = {
 };
 
 const actions = {
-    fetchUserPosts({ commit }, userId) {
-        commit("setPostsStatus", "loading");
-        axios
-            .get("/api/users/" + userId + "/posts")
-            .then(res => {
-                commit("setPosts", res.data);
-                commit("setPostsStatus", "success");
-            })
-            .catch(e => {
-                console.error("Unable to fetch posts");
-                commit("setPostsStatus", "error");
-            });
-    },
     fetchUser({ commit, dispatch }, userId) {
         commit("setUserStatus", "loading");
         axios
@@ -109,12 +93,6 @@ const mutations = {
     },
     setUserStatus(state, status) {
         state.userStatus = status;
-    },
-    setPostsStatus(state, status) {
-        state.postsStatus = status;
-    },
-    setPosts(state, posts) {
-        state.posts = posts;
     }
 };
 

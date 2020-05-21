@@ -1,16 +1,29 @@
 const state = {
-    newsPosts: null,
-    newsPostsStatus: null,
+    posts: null,
+    postsStatus: null,
     postMessage: ""
 };
 
 const getters = {
-    newsPosts: state => state.newsPosts,
-    newsStatus: state => state.newsPostsStatus,
+    posts: state => state.posts,
+    newsStatus: state => state.postsStatus,
     postMessage: state => state.postMessage
 };
 
 const actions = {
+    fetchUserPosts({ commit }, userId) {
+        commit("setPostsStatus", "loading");
+        axios
+            .get("/api/users/" + userId + "/posts")
+            .then(res => {
+                commit("setPosts", res.data);
+                commit("setPostsStatus", "success");
+            })
+            .catch(e => {
+                console.error("Unable to fetch posts");
+                commit("setPostsStatus", "error");
+            });
+    },
     fetchNewsPosts({ commit }, title) {
         commit("setPostsStatus", "loading");
 
@@ -64,34 +77,30 @@ const actions = {
 
 const mutations = {
     pushPost(state, post) {
-        state.newsPosts.data.unshift(post);
+        state.posts.data.unshift(post);
     },
     pushLikes(state, { postId, data }) {
-        let index = state.newsPosts.data.findIndex(
-            el => el.data.post_id == postId
-        );
+        let index = state.posts.data.findIndex(el => el.data.post_id == postId);
 
         if (index >= 0) {
             //console.log(index, data);
-            state.newsPosts.data[index].data.attributes.likes = data;
+            state.posts.data[index].data.attributes.likes = data;
         }
     },
     pushComment(state, { postId, data }) {
-        let index = state.newsPosts.data.findIndex(
-            el => el.data.post_id == postId
-        );
+        let index = state.posts.data.findIndex(el => el.data.post_id == postId);
 
         if (index >= 0) {
             //console.log(index, data);
-            state.newsPosts.data[index].data.attributes.comments = data;
+            state.posts.data[index].data.attributes.comments = data;
         }
     },
 
     setPosts(state, posts) {
-        state.newsPosts = posts;
+        state.posts = posts;
     },
     setPostsStatus(state, status) {
-        state.newsPostsStatus = status;
+        state.postsStatus = status;
     },
     updateMessage(state, message) {
         state.postMessage = message;

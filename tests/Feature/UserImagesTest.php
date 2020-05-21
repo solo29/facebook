@@ -49,7 +49,7 @@ class UserImagesTest extends TestCase
                 'type' => 'user-images',
                 'user_image_id' => $userImage->id,
                 'attributes' => [
-                    'path' => url($userImage->path),
+                    'path' => Storage::url($userImage->path),
                     'width' => ($userImage->width),
                     'height' => ($userImage->height),
                     'location' => ($userImage->location)
@@ -93,13 +93,13 @@ class UserImagesTest extends TestCase
                 'user_id' => $user->id,
                 'attributes' => [
                     'name' => $user->name,
-                    'cover-image' => [
+                    'cover_image' => [
                         'data' => [
                             'type' => 'user-images',
                             'user_image_id' => 1
                         ],
                     ],
-                    'profile-image' => [
+                    'profile_image' => [
                         'data' => [
                             'type' => 'user-images',
                             'user_image_id' => 2

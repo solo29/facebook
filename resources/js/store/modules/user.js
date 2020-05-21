@@ -5,7 +5,11 @@ const state = {
 
 const getters = {
     authUser: state => state.user,
-    authUserStatus: state => state.userStatus
+    authUserStatus: state => state.userStatus,
+    profileImage: state =>
+        state.user.data.attributes.profile_image.data.attributes.path,
+    coverImage: state =>
+        state.user.data.attributes.profile_image.data.attributes.path
 };
 
 const actions = {

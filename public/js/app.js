@@ -2188,6 +2188,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Post",
   props: {
@@ -21085,7 +21087,11 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
-            _c("p", { staticClass: "ml-1" }, [_vm._v("Gio and 299 others")])
+            _c("p", { staticClass: "ml-1" }, [
+              _vm._v(
+                _vm._s(_vm.post.data.attributes.likes.like_count) + " Likes"
+              )
+            ])
           ]),
           _vm._v(" "),
           _vm._m(1)
@@ -21100,7 +21106,17 @@ var render = function() {
             "button",
             {
               staticClass:
-                "flex rounded-lg text-sm text-gray-700 focus:outline-none w-full hover:bg-gray-200 justify-center py-2 items-center"
+                "flex rounded-lg text-sm text-gray-700 focus:outline-none w-full justify-center py-2 items-center",
+              class: [
+                _vm.post.data.attributes.likes.user_likes_post
+                  ? "bg-blue-600 text-white"
+                  : ""
+              ],
+              on: {
+                click: function($event) {
+                  return _vm.$store.dispatch("likePost", _vm.post.data.post_id)
+                }
+              }
             },
             [
               _c(
@@ -38207,11 +38223,36 @@ var actions = {
       console.error("Unable to fetch posts");
       commit("setPostsStatus", "error");
     });
+  },
+  likePost: function likePost(_ref3, postId) {
+    var commit = _ref3.commit,
+        state = _ref3.state;
+    axios.post("/api/posts/" + postId + "/like").then(function (res) {
+      commit("pushLikes", {
+        postId: postId,
+        data: res.data
+      });
+      commit("updateMessage", "");
+    })["catch"](function (e) {
+      console.error(e);
+    });
   }
 };
 var mutations = {
   pushPost: function pushPost(state, post) {
     state.newsPosts.data.unshift(post);
+  },
+  pushLikes: function pushLikes(state, _ref4) {
+    var postId = _ref4.postId,
+        data = _ref4.data;
+    var index = state.newsPosts.data.findIndex(function (el) {
+      return el.data.post_id == postId;
+    });
+
+    if (index >= 0) {
+      //console.log(index, data);
+      state.newsPosts.data[index].data.attributes.likes = data;
+    }
   },
   setPosts: function setPosts(state, posts) {
     state.newsPosts = posts;

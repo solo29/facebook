@@ -37,12 +37,34 @@ const actions = {
                 console.error("Unable to fetch posts");
                 commit("setPostsStatus", "error");
             });
+    },
+    likePost({ commit, state }, postId) {
+        axios
+            .post("/api/posts/" + postId + "/like")
+            .then(res => {
+                commit("pushLikes", { postId, data: res.data });
+
+                commit("updateMessage", "");
+            })
+            .catch(e => {
+                console.error(e);
+            });
     }
 };
 
 const mutations = {
     pushPost(state, post) {
         state.newsPosts.data.unshift(post);
+    },
+    pushLikes(state, { postId, data }) {
+        let index = state.newsPosts.data.findIndex(
+            el => el.data.post_id == postId
+        );
+
+        if (index >= 0) {
+            //console.log(index, data);
+            state.newsPosts.data[index].data.attributes.likes = data;
+        }
     },
     setPosts(state, posts) {
         state.newsPosts = posts;

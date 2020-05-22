@@ -2598,24 +2598,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -25666,11 +25648,7 @@ var render = function() {
                     ),
                     _vm._v(" "),
                     _c("p", { staticClass: "ml-4 text-2xl text-gray-100" }, [
-                      _vm._v(
-                        "\n                " +
-                          _vm._s(_vm.user.data.attributes.name) +
-                          "\n            "
-                      )
+                      _vm._v(_vm._s(_vm.user.data.attributes.name))
                     ])
                   ]
                 ),
@@ -25696,13 +25674,7 @@ var render = function() {
                               }
                             }
                           },
-                          [
-                            _vm._v(
-                              "\n                " +
-                                _vm._s(_vm.friendButtonText) +
-                                "\n            "
-                            )
-                          ]
+                          [_vm._v(_vm._s(_vm.friendButtonText))]
                         )
                       : _vm._e(),
                     _vm._v(" "),
@@ -25720,7 +25692,7 @@ var render = function() {
                               }
                             }
                           },
-                          [_vm._v("\n                Accept\n            ")]
+                          [_vm._v("Accept")]
                         )
                       : _vm._e(),
                     _vm._v(" "),
@@ -25738,18 +25710,18 @@ var render = function() {
                               }
                             }
                           },
-                          [_vm._v("\n                Ignore\n            ")]
+                          [_vm._v("Ignore")]
                         )
                       : _vm._e()
                   ]
                 )
               ])
             : _vm._e(),
-          _vm._v("\n    " + _vm._s(_vm.status) + "\n    "),
+          _vm._v(" "),
           _vm.status.posts === "loading"
             ? _c("div", [_vm._v("..loading")])
             : _vm.status.posts === "success" && _vm.posts.length < 1
-            ? _c("div", [_vm._v("\n        No posts found.\n    ")])
+            ? _c("div", [_vm._v("No posts found.")])
             : _vm._e(),
           _vm._v(" "),
           _vm.posts

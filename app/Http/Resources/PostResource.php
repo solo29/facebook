@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
 
 class PostResource extends JsonResource
 {
@@ -15,6 +16,7 @@ class PostResource extends JsonResource
      */
     public function toArray($request)
     {
+
         return [
             'data' => [
                 'type' => 'posts',
@@ -24,7 +26,7 @@ class PostResource extends JsonResource
                     'likes' => new LikeCollection($this->likes),
                     'comments' => new CommentCollection($this->comments),
                     'body' => $this->body,
-                    'image' => $this->image,
+                    'image' => Storage::url($this->image),
                     'posted_at' => $this->created_at->diffForHumans()
 
                 ]

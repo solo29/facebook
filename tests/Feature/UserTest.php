@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -51,7 +52,7 @@ class UserTest extends TestCase
                         'post_id' => $post->id,
                         'attributes' => [
                             'body' => $post->body,
-                            'image' => $post->image,
+                            'image' =>  Storage::url($post->image),
                             'posted_at' => $post->created_at->diffForHumans(),
                             'posted_by' => [
                                 'data' => [

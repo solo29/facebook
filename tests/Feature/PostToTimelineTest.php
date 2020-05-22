@@ -6,10 +6,19 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class PostToTimelineTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('public');
+    }
 
     /** @test */
     public function a_user_can_post_text()
@@ -42,6 +51,58 @@ class PostToTimelineTest extends TestCase
                             ]
                         ],
                         'body' => 'testing body'
+                    ]
+                ],
+                'links' => [
+                    'self' => url('/posts/' . $post->id)
+                ]
+
+            ]
+        );
+    }
+
+
+    /** @test */
+    public function a_user_can_post_text_with_image()
+    {
+        $this->withoutExceptionHandling();
+        Storage::fake('public');
+        $user = $this->signIn();
+
+        $file = UploadedFile::fake()->image('test.jpeg');
+
+        $response = $this->post(
+            '/api/posts',
+            [
+                'body' => 'testing body',
+                'image' => $file,
+                'width' => 850,
+                'height' => 300,
+
+            ]
+        )->assertStatus(201);
+
+
+        Storage::disk('public')->assertExists('post-images/' . $file->hashName());
+
+
+        $posts =  \App\Post::all();
+        $this->assertCount(1, $posts);
+        $post = $posts[0];
+
+
+
+
+
+        $response->assertJson(
+            [
+                'data' => [
+                    'type' => 'posts',
+                    'post_id' => $post->id,
+                    'attributes' => [
+                        'body' => 'testing body',
+                        'image' => Storage::url('post-images/' . $file->hashName())
+
                     ]
                 ],
                 'links' => [

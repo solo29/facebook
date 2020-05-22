@@ -4,7 +4,7 @@
 
     <p v-if="newsStatus=='loading'">..loading</p>
     <Post
-      v-else-if="newsStatus=='success'"
+      v-else-if="newsStatus=='success'&& posts.data"
       v-for="post in posts.data"
       :key="post.data.post_id"
       :post="post"

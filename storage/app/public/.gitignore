@@ -1,2 +1,6 @@
-*
+
+!user-images
+!user-images/cover-default-image.jpg
+!user-images/profile-default-image.jpeg
+
 !.gitignore

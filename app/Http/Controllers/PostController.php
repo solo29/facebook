@@ -46,8 +46,8 @@ class PostController extends Controller
         if (isset($data['image'])) {
             $imgPath = $data['image']->store('post-images', 'public');
             if (!\App::runningUnitTests()) {
-
-                $image = Image::make($data['image'])
+                //this is resizing image and overriding it
+                Image::make($data['image'])
                     ->fit($data['width'], $data['height'])
                     ->save(storage_path('app/public/post-images/' . $data['image']->hashName()));
             }

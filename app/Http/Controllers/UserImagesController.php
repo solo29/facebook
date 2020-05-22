@@ -22,6 +22,7 @@ class UserImagesController extends Controller
 
 
         if (!\App::runningUnitTests()) {
+            //this is resizing image and overriding it
             Image::make($data['image'])
                 ->fit($data['width'], $data['height'])
                 ->save(storage_path('app/public/user-images/' . $data['image']->hashName()));

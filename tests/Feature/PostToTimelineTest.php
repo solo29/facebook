@@ -17,7 +17,7 @@ class PostToTimelineTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('public');
+        Storage::fake('post-images');
     }
 
     /** @test */
@@ -66,7 +66,7 @@ class PostToTimelineTest extends TestCase
     public function a_user_can_post_text_with_image()
     {
         $this->withoutExceptionHandling();
-        Storage::fake('public');
+
         $user = $this->signIn();
 
         $file = UploadedFile::fake()->image('test.jpeg');
@@ -83,7 +83,7 @@ class PostToTimelineTest extends TestCase
         )->assertStatus(201);
 
 
-        Storage::disk('public')->assertExists('post-images/' . $file->hashName());
+        Storage::disk('post-images')->assertExists($file->hashName());
 
 
         $posts =  \App\Post::all();

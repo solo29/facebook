@@ -17,12 +17,15 @@ class UserImagesTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('public');
+        Storage::fake('user-images');
     }
 
     /** @test */
     public function user_can_upload_test()
     {
+
+
+
         $this->withoutExceptionHandling();
         $user = $this->signIn();
 
@@ -35,7 +38,8 @@ class UserImagesTest extends TestCase
             'location' => 'cover'
         ])->assertStatus(201);
 
-        Storage::disk('public')->assertExists('user-images/' . $file->hashName());
+        Storage::disk('user-images')->assertExists($file->hashName());
+
         $userImage = UserImage::first();
 
         $this->assertEquals('user-images/' . $file->hashName(), $userImage->path);
@@ -82,7 +86,7 @@ class UserImagesTest extends TestCase
         ])->assertStatus(201);
 
 
-        Storage::disk('public')->assertExists('user-images/' . $file->hashName());
+        Storage::disk('user-images')->assertExists($file->hashName());
 
         $response = $this->get('/api/users/' . $user->id)->assertStatus(200);
 

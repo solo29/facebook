@@ -18,15 +18,19 @@ class UserImagesController extends Controller
             'height' => '',
             'location' => ''
         ]);
-        $imgPath = $data['image']->store('user-images', 'public');
 
+        $filename = $data['image']->hashName();
 
-        if (!\App::runningUnitTests()) {
-            //this is resizing image and overriding it
-            Image::make($data['image'])
-                ->fit($data['width'], $data['height'])
-                ->save(storage_path('app/public/user-images/' . $data['image']->hashName()));
-        }
+        $storagePath = storage_path('app/public/user-images/' . $filename);
+
+        if (\App::runningUnitTests())
+            $storagePath = storage_path('framework/testing/disks/user-images/' . $filename);
+
+        Image::make($data['image'])
+            ->fit($data['width'], $data['height'])
+            ->save($storagePath);
+
+        $imgPath = 'user-images/' . $filename;
 
         $userImage = auth()->user()->images()->create([
             'path' => $imgPath,
